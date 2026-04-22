@@ -1,5 +1,5 @@
 # Stroke Risk Prediction using Machine Learning
-### Tools: Python, Scikit-Learn, XGBoost | Models: Random Forest, Decision Tree, XGBoost
+### Tools: Python, Scikit-Learn| Models: Random Forest, Decision Tree, XGBoost
 
 ## Project Overview
 This project aims to predict the likelihood of a patient experiencing a stroke based on 11 clinical and lifestyle features, including BMI, glucose levels, and hypertension. The goal was to build a highly accurate classification model that can assist in early medical intervention.
