@@ -6,17 +6,16 @@ from app.schemas import StrokeInput
 
 app = FastAPI(title="Stroke Risk Prediction API")
 
-# Get absolute path references
+# Resolve absolute paths dynamically
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  
 ROOT_DIR = os.path.dirname(BASE_DIR)                  
 
 MODEL_PATH = os.path.join(ROOT_DIR, "models", "stroke_model.pkl")
 SCALER_PATH = os.path.join(ROOT_DIR, "models", "scaler.pkl")
 
-# DIAGNOSTIC PRINTS: These will show up in your GitHub Actions runner console!
-print(print(f"\n[DIAGNOSTIC] Current Working Directory: {os.getcwd()}"))
-print(f"[DIAGNOSTIC] Looking for Model at: {MODEL_PATH}")
-print(f"[DIAGNOSTIC] Looking for Scaler at: {SCALER_PATH}")
+# Fixed diagnostic strings
+print(f"\n[DIAGNOSTIC] Root Directory: {ROOT_DIR}")
+print(f"[DIAGNOSTIC] Checking Model Path: {MODEL_PATH}")
 print(f"[DIAGNOSTIC] Model File Exists? {os.path.exists(MODEL_PATH)}")
 print(f"[DIAGNOSTIC] Scaler File Exists? {os.path.exists(SCALER_PATH)}\n")
 
@@ -44,10 +43,9 @@ def read_root():
 @app.post("/predict")
 def predict_stroke(payload: StrokeInput):
     if model is None or scaler is None:
-        # Include the path in the exception details so we can inspect it in the logs
         raise HTTPException(
             status_code=503, 
-            detail=f"Artifacts missing. Looked at: {MODEL_PATH}"
+            detail=f"Artifacts missing. Model exist: {os.path.exists(MODEL_PATH)}, Scaler exist: {os.path.exists(SCALER_PATH)}"
         )
     
     try:
