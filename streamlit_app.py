@@ -2,6 +2,8 @@
 import streamlit as st
 import requests
 
+# 1. PLACE THE API URL HERE AT THE TOP
+API_URL = "https://stroke-risk-prediction-ml-api.onrender.com/predict"
 # Set page configuration with a wide dashboard layout
 st.set_page_config(page_title="Stroke Risk Analytics Platform", layout="wide")
 
@@ -9,12 +11,10 @@ st.set_page_config(page_title="Stroke Risk Analytics Platform", layout="wide")
 IMAGE_URL = "https://static.vecteezy.com/system/resources/previews/048/205/207/non_2x/a-illustration-of-human-brain-stroke-highlighting-medical-details-hemorrhage-and-pain-points-for-health-checks-in-a-flat-cartoon-background-vector.jpg"
 
 # Custom CSS injection with a darker semi-transparent gradient tint
-# This tint ensures your white data text contrasts perfectly against the bright illustration!
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Lora:ital,wght@0,500;1,400&display=swap');
     
-    /* Apply your chosen medical web image as the fixed background overlay */
     .stApp {{
         background-image: linear-gradient(rgba(10, 25, 30, 0.88), rgba(16, 37, 48, 0.88)), url("{IMAGE_URL}");
         background-size: cover;
@@ -22,7 +22,6 @@ st.markdown(f"""
         background-attachment: fixed;
     }}
     
-    /* Main Title Styling */
     .main-title {{
         font-family: 'Lora', serif;
         font-size: 44px;
@@ -32,7 +31,6 @@ st.markdown(f"""
         text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
     }}
     
-    /* Subtitle Styling */
     .sub-text {{
         font-family: 'Inter', sans-serif;
         font-size: 16px;
@@ -41,7 +39,6 @@ st.markdown(f"""
         text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
     }}
     
-    /* Glassmorphism containers to elevate inputs over the vector background artwork */
     .metric-card {{
         background-color: rgba(12, 28, 36, 0.82);
         backdrop-filter: blur(12px);
@@ -52,7 +49,6 @@ st.markdown(f"""
         box-shadow: 0 8px 24px rgba(0,0,0,0.5);
     }}
     
-    /* Section Headers */
     .section-header {{
         font-family: 'Inter', sans-serif;
         font-size: 22px;
@@ -64,7 +60,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # App Header
-st.markdown('<div class="main-title">🩺 NeuroVascular Risk Analytics</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-title">👑 NeuroVascular Risk Analytics</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-text">Clinical predictive intelligence interface for real-time patient stroke probability metrics.</div>', unsafe_allow_html=True)
 
 # Split the UI into two styled columns
@@ -114,7 +110,8 @@ if calculate:
     }
 
     try:
-        response = requests.post("http://127.0.0.1:8000/predict", json=payload)
+        # 2. SWAPPED OUT THE LOCAL URL FOR THE CLOUD API_URL VARIABLE
+        response = requests.post(API_URL, json=payload)
         if response.status_code == 200:
             res = response.json()
             prob = res["stroke_probability"] * 100
