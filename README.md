@@ -1,6 +1,6 @@
 # 🧠 Stroke Risk Analytics Platform
 
-A production grade Machine Learning system that predicts stroke probability in real-time, served via FastAPI REST API with a live Streamlit dashboard and an automated CI/CD pipeline.
+Originally conceived as a collaborative university machine learning group project, this application was extended and enhanced into a production-grade diagnostic system. While the baseline classification model originated from team research, the current architecture—including the FastAPI REST API, the interactive Streamlit dashboard, automated CI/CD pipelines, and cloud-based deployment—was architected and developed as an individual contribution to transition the research into a live, scalable application.
 
 ### 🔗 Live Links
 
