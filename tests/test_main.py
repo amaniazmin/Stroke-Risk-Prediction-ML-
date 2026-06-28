@@ -12,7 +12,6 @@ def test_read_root():
 
 def test_predict_stroke_risk_positive():
     """Test the prediction endpoint with mock high-risk patient metrics."""
-    # This dictionary right here IS the test payload!
     test_payload = {
         "age": 67.0,
         "hypertension": 0,
@@ -32,5 +31,9 @@ def test_predict_stroke_risk_positive():
     }
     
     response = client.post("/predict", json=test_payload)
-        
     assert response.status_code == 200
+    
+    response_data = response.json()
+    # Key match alignment fix
+    assert "stroke_probability" in response_data
+    assert "risk_level" in response_data

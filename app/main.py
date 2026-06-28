@@ -1,4 +1,3 @@
-# app/main.py
 import os
 import pickle
 import pandas as pd
@@ -7,10 +6,14 @@ from app.schemas import StrokeInput
 
 app = FastAPI(title="Stroke Risk Prediction API")
 
-MODEL_PATH = "models/stroke_model.pkl"
-SCALER_PATH = "models/scaler.pkl"
+# CRITICAL FIX: Resolve absolute paths dynamically based on this file's location
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Points to 'app' directory
+ROOT_DIR = os.path.dirname(BASE_DIR)                  # Points to project root
 
-# CRITICAL FIX: Properly load the pickle files without typos
+MODEL_PATH = os.path.join(ROOT_DIR, "models", "stroke_model.pkl")
+SCALER_PATH = os.path.join(ROOT_DIR, "models", "scaler.pkl")
+
+# Safely load the pickle files using absolute paths
 if os.path.exists(MODEL_PATH) and os.path.exists(SCALER_PATH):
     with open(MODEL_PATH, "rb") as f:
         model = pickle.load(f)
