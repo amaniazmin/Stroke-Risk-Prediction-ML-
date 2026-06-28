@@ -6,14 +6,20 @@ from app.schemas import StrokeInput
 
 app = FastAPI(title="Stroke Risk Prediction API")
 
-# CRITICAL FIX: Resolve absolute paths dynamically based on this file's location
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Points to 'app' directory
-ROOT_DIR = os.path.dirname(BASE_DIR)                  # Points to project root
+# Get absolute path references
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  
+ROOT_DIR = os.path.dirname(BASE_DIR)                  
 
 MODEL_PATH = os.path.join(ROOT_DIR, "models", "stroke_model.pkl")
 SCALER_PATH = os.path.join(ROOT_DIR, "models", "scaler.pkl")
 
-# Safely load the pickle files using absolute paths
+# DIAGNOSTIC PRINTS: These will show up in your GitHub Actions runner console!
+print(print(f"\n[DIAGNOSTIC] Current Working Directory: {os.getcwd()}"))
+print(f"[DIAGNOSTIC] Looking for Model at: {MODEL_PATH}")
+print(f"[DIAGNOSTIC] Looking for Scaler at: {SCALER_PATH}")
+print(f"[DIAGNOSTIC] Model File Exists? {os.path.exists(MODEL_PATH)}")
+print(f"[DIAGNOSTIC] Scaler File Exists? {os.path.exists(SCALER_PATH)}\n")
+
 if os.path.exists(MODEL_PATH) and os.path.exists(SCALER_PATH):
     with open(MODEL_PATH, "rb") as f:
         model = pickle.load(f)
@@ -38,24 +44,24 @@ def read_root():
 @app.post("/predict")
 def predict_stroke(payload: StrokeInput):
     if model is None or scaler is None:
-        raise HTTPException(status_code=503, detail="Machine learning model artifacts are missing or not trained.")
+        # Include the path in the exception details so we can inspect it in the logs
+        raise HTTPException(
+            status_code=503, 
+            detail=f"Artifacts missing. Looked at: {MODEL_PATH}"
+        )
     
     try:
         input_data = payload.dict()
         row_values = [input_data[col] for col in FEATURE_NAMES]
-        
-        # Convert to DataFrame to retain valid feature names for the scaler
         features_df = pd.DataFrame([row_values], columns=FEATURE_NAMES)
         
         scaled_features = scaler.transform(features_df)
         probability = model.predict_proba(scaled_features)[0][1]
-        
         risk_level = "High Risk" if probability >= 0.50 else "Low Risk"
         
         return {
             "stroke_probability": float(probability),
             "risk_level": risk_level
         }
-        
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal Processing Error: {str(e)}")
